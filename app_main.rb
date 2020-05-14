@@ -1,15 +1,12 @@
+# app.rb
 require 'sinatra'
 require 'line/bot'
 
-# 微小変更部分！確認用。
-get '/' do
-  "Hello world"
-end
-
 def client
   @client ||= Line::Bot::Client.new { |config|
-    config.channel_secret = ENV["88804a59c0ce6871d44a90998268fdc0"]
-    config.channel_token = ENV["cy3BhNvb0sJ5EA+8V2K3UOkwu+Wxc5wWE9BPtgG6hobSPa6pCLKlfuYtDWzjV/QZnR3zAlENJXJxtI006diSFnTyhzuYQCWAsiEdgtiA7Gay+7VnRyuksuLBIk4f4Kfnxj3iYXo5r5C5O1WsDO6FqQdB04t89/1O/w1cDnyilFU="]
+    config.channel_id = ENV["LINE_CHANNEL_ID"]
+    config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
+    config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
   }
 end
 
@@ -22,7 +19,7 @@ post '/callback' do
   end
 
   events = client.parse_events_from(body)
-  events.each { |event|
+  events.each do |event|
     case event
     when Line::Bot::Event::Message
       case event.type
@@ -38,7 +35,8 @@ post '/callback' do
         tf.write(response.body)
       end
     end
-  }
+  end
 
+  # Don't forget to return a successful response
   "OK"
 end
